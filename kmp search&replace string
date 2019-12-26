@@ -1,0 +1,44 @@
+#include<iostream> 
+using namespace std;
+extern int start=0;
+int position(const char a[],char s[]){
+	int tem;
+	bool kmp=1;
+	for(int i=start;s[i-start]!='\0';i++){
+		if(a[i]=='\0')
+			return-1; 
+		if(a[i]==s[0]&&i!=start&&kmp){
+			tem=i;
+			kmp=0;
+		}
+		if(a[i]!=s[i-start]){
+			if(kmp)
+				start=i+1;
+			else 
+				start=tem;
+			return position(a,s);
+		}
+	}
+	return 	start;
+}
+int main(){//查找替换子串(不大于原长度) kmp 
+	int len,len1,len2;
+	cin>>len>>len1>>len2;	
+	char a[len+1],s[len1+1],r[len2+1];
+	cin>>a>>s>>r; 
+	int del=position(a,s);
+	for(;del>=0;){
+		for(int i=0;i<len2;i++)
+			a[i+del]=r[i];
+		if(len2<len1){
+			for(int i=del+len2;i<len;i++)
+				a[i]=a[i-len2+len1]; 
+			len-=(len1-len2);
+			a[len]='\0';
+		}
+		start+=len2;
+		del=position(a,s);	
+	}
+	cout<<a;
+	return 0;
+}
